@@ -36,3 +36,14 @@ build/
 
 ### Mac OS ###
 .DS_Store
+/asynccifr1
+/asynccifr2
+/privatekey1
+/privatekey2
+/publickey1
+/publickey2
+/testcifr2
+/testcifr5
+/testkey5
+/testkeystore5
+/teststore2
