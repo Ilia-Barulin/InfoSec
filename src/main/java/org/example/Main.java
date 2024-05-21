@@ -15,6 +15,8 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         SymmetricCrypto symmetricCrypto = new SymmetricCrypto();
         AsymmetricCrypto asymmetricCrypto = new AsymmetricCrypto();
+        DigitalSignatureCrypto digitalSignatureCrypto = new DigitalSignatureCrypto();
+
 
         SecretKey secretKey = null;
         KeyPair keyPair = null;
@@ -24,9 +26,10 @@ public class Main {
                 System.out.println("Choose the type of cryptography:");
                 System.out.println("1. Symmetric");
                 System.out.println("2. Asymmetric");
-                System.out.println("3. Exit");
+                System.out.println("3. Digital Signature");
+                System.out.println("4. Exit");
                 int choice = scanner.nextInt();
-                scanner.nextLine();  // consume newline
+                scanner.nextLine();
 
                 switch (choice) {
                     case 1:
@@ -36,6 +39,9 @@ public class Main {
                         asymmetricMenu(scanner, asymmetricCrypto);
                         break;
                     case 3:
+                        digitalSignatureMenu(scanner, digitalSignatureCrypto);
+                        break;
+                    case 4:
                         System.exit(0);
                     default:
                         System.out.println("Invalid choice. Please try again.");
@@ -225,7 +231,100 @@ public class Main {
             }
         }
     }
+
+
+    private static void digitalSignatureMenu(Scanner scanner, DigitalSignatureCrypto crypto) {
+        PublicKey publicKey = null;
+        PrivateKey privateKey = null;
+        while (true) {
+            System.out.println("Choose an option:");
+            System.out.println("1. Generate Key Pair");
+            System.out.println("2. Load Public Key from PEM");
+            System.out.println("3. Load Private Key from PEM");
+            System.out.println("4. Sign Data");
+            System.out.println("5. Verify Signature");
+            System.out.println("6. Back to Main Menu");
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // consume newline
+
+            try {
+                switch (choice) {
+                    case 1:
+                        System.out.print("Enter key size (e.g., 1024): ");
+                        int keySize = scanner.nextInt();
+                        scanner.nextLine();  // consume newline
+                        System.out.print("Enter seed (leave blank for default randomness): ");
+                        String seedInput = scanner.nextLine();
+                        SecureRandom secureRandom = seedInput.isEmpty() ?
+                                SymmetricCrypto.getSecureRandom(null) :
+                                SymmetricCrypto.getSecureRandom(seedInput.getBytes());
+                        KeyPair keyPair = crypto.generateKeyPair(keySize, secureRandom);
+                        publicKey = keyPair.getPublic();
+                        privateKey = keyPair.getPrivate();
+                        crypto.displayKey(publicKey);
+                        crypto.displayKey(privateKey);
+                        System.out.print("Enter filename to save the public key: ");
+                        String publicKeyFilename = scanner.nextLine();
+                        crypto.saveKeyToPEM(publicKey, publicKeyFilename);
+                        System.out.print("Enter filename to save the private key: ");
+                        String privateKeyFilename = scanner.nextLine();
+                        crypto.saveKeyToPEM(privateKey, privateKeyFilename);
+                        break;
+                    case 2:
+                        System.out.print("Enter filename to load the public key: ");
+                        String loadPublicFilename = scanner.nextLine();
+                        publicKey = crypto.loadPublicKeyFromPEM(loadPublicFilename);
+                        crypto.displayKey(publicKey); // Displaying the loaded public key in hex format
+                        break;
+                    case 3:
+                        System.out.print("Enter filename to load the private key: ");
+                        String loadPrivateFilename = scanner.nextLine();
+                        privateKey = crypto.loadPrivateKeyFromPEM(loadPrivateFilename);
+                        crypto.displayKey(privateKey); // Displaying the loaded private key in hex format
+                        break;
+                    case 4:
+                        if (privateKey == null) {
+                            System.out.println("No private key loaded. Please generate or load a key first.");
+                            break;
+                        }
+                        System.out.print("Enter filename of the data to sign: ");
+                        String dataFilename = scanner.nextLine();
+                        String data = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(dataFilename)));
+                        String signature = crypto.signData(data, privateKey);
+                        System.out.print("Enter filename to save the signature: ");
+                        String signatureFilename = scanner.nextLine();
+                        crypto.saveSignatureToFile(signature, signatureFilename);
+                        System.out.println("Signature saved to " + signatureFilename);
+                        break;
+                    case 5:
+                        if (publicKey == null) {
+                            System.out.println("No public key loaded. Please generate or load a key first.");
+                            break;
+                        }
+                        System.out.print("Enter filename of the data to verify: ");
+                        dataFilename = scanner.nextLine();
+                        data = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(dataFilename)));
+                        System.out.print("Enter filename of the signature: ");
+                        signatureFilename = scanner.nextLine();
+                        signature = crypto.loadSignatureFromFile(signatureFilename);
+                        boolean isValid = crypto.verifySignature(data, signature, publicKey);
+                        System.out.println("Signature is " + (isValid ? "valid" : "invalid"));
+                        break;
+                    case 6:
+                        return;  // Back to main menu
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }
+
+
 
     /*
     public static void main(String[] args) {
