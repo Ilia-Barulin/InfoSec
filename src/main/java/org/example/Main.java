@@ -13,18 +13,21 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         SymmetricCrypto crypto = new SymmetricCrypto();
 
+        SecretKey secretKey = null;
+
         try {
-            SecretKey secretKey = null;
+
             while (true) {
                 System.out.println("Choose an option:");
                 System.out.println("1. Generate Secret Key");
                 System.out.println("2. Load Secret Key from File");
-                System.out.println("3. Load Secret Key from Keystore");
-                System.out.println("4. Encrypt Text");
-                System.out.println("5. Decrypt Text");
-                System.out.println("6. Exit");
+                System.out.println("3. Save Secret Key to Keystore");
+                System.out.println("4. Load Secret Key from Keystore");
+                System.out.println("5. Encrypt Text");
+                System.out.println("6. Decrypt Text");
+                System.out.println("7. Exit");
                 int choice = scanner.nextInt();
-                scanner.nextLine();  // consume newline
+                scanner.nextLine();
 
 
 
@@ -32,7 +35,7 @@ public class Main {
                     case 1:
                         System.out.print("Enter key size (128, 192, 256): ");
                         int keySize = scanner.nextInt();
-                        scanner.nextLine();  // consume newline
+                        scanner.nextLine();
                         System.out.print("Enter seed (leave blank for default randomness): ");
                         String seedInput = scanner.nextLine();
                         SecureRandom secureRandom = seedInput.isEmpty() ?
@@ -51,16 +54,30 @@ public class Main {
                         crypto.displaySecretKey(secretKey); // Displaying the loaded key in hex format
                         break;
                     case 3:
+                        if (secretKey == null) {
+                            System.out.println("No secret key loaded. Please generate or load a key first.");
+                            break;
+                        }
                         System.out.print("Enter keystore filename: ");
                         String keystoreFilename = scanner.nextLine();
                         System.out.print("Enter key alias: ");
                         String alias = scanner.nextLine();
                         System.out.print("Enter keystore password: ");
                         char[] password = scanner.nextLine().toCharArray();
+                        crypto.saveSecretKeyToKeystore(secretKey, keystoreFilename, alias, password);
+                        System.out.println("Secret key saved to keystore.");
+                        break;
+                    case 4:
+                        System.out.print("Enter keystore filename: ");
+                        keystoreFilename = scanner.nextLine();
+                        System.out.print("Enter key alias: ");
+                        alias = scanner.nextLine();
+                        System.out.print("Enter keystore password: ");
+                        password = scanner.nextLine().toCharArray();
                         secretKey = crypto.loadSecretKeyFromKeystore(keystoreFilename, alias, password);
                         crypto.displaySecretKey(secretKey); // Displaying the loaded key in hex format
                         break;
-                    case 4:
+                    case 5:
                         if (secretKey == null) {
                             System.out.println("No secret key loaded. Please generate or load a key first.");
                             break;
@@ -73,7 +90,7 @@ public class Main {
                         crypto.displayEncryptedText(encryptedText); // Displaying the encrypted text in hex format
                         crypto.saveEncryptedText(encryptedText, filename);
                         break;
-                    case 5:
+                    case 6:
                         if (secretKey == null) {
                             System.out.println("No secret key loaded. Please generate or load a key first.");
                             break;
@@ -83,7 +100,7 @@ public class Main {
                         encryptedText = crypto.loadEncryptedText(filename);
                         System.out.println("Decrypted Text: " + crypto.decrypt(encryptedText, secretKey));
                         break;
-                    case 6:
+                    case 7:
                         System.exit(0);
                     default:
                         System.out.println("Invalid choice. Please try again.");

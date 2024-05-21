@@ -71,7 +71,7 @@ public class SymmetricCrypto {
         }
     }
 
-
+    /*
     public static void saveSecretKeyToKeystore(SecretKey key, String keystoreFilename, String alias, char[] password) throws Exception {
         KeyStore keyStore = KeyStore.getInstance("JCEKS");
         keyStore.load(null, null);
@@ -90,6 +90,35 @@ public class SymmetricCrypto {
         }
         return (SecretKey) keyStore.getKey(alias, password);
     }
+     */
+
+    public static void saveSecretKeyToKeystore(SecretKey key, String keystoreFilename, String alias, char[] password) throws Exception {
+        KeyStore keyStore = KeyStore.getInstance("JCEKS");
+        // Load the existing keystore or create a new one if it doesn't exist
+        File keystoreFile = new File(keystoreFilename);
+        if (keystoreFile.exists()) {
+            try (FileInputStream fis = new FileInputStream(keystoreFilename)) {
+                keyStore.load(fis, password);
+            }
+        } else {
+            keyStore.load(null, null);
+        }
+        KeyStore.SecretKeyEntry secretKeyEntry = new KeyStore.SecretKeyEntry(key);
+        KeyStore.PasswordProtection keyStorePP = new KeyStore.PasswordProtection(password);
+        keyStore.setEntry(alias, secretKeyEntry, keyStorePP);
+        try (FileOutputStream fos = new FileOutputStream(keystoreFilename)) {
+            keyStore.store(fos, password);
+        }
+    }
+
+    public static SecretKey loadSecretKeyFromKeystore(String keystoreFilename, String alias, char[] password) throws Exception {
+        KeyStore keyStore = KeyStore.getInstance("JCEKS");
+        try (FileInputStream fis = new FileInputStream(keystoreFilename)) {
+            keyStore.load(fis, password);
+        }
+        return (SecretKey) keyStore.getKey(alias, password);
+    }
+
 
     public static String encrypt(String plainText, SecretKey key) throws Exception {
         Cipher cipher = Cipher.getInstance("AES");
