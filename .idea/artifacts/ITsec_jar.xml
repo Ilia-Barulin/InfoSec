@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ITsec:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ITsec_jar</output-path>
+    <root id="archive" name="ITsec.jar">
+      <element id="module-output" name="ITsec" />
+    </root>
+  </artifact>
+</component>

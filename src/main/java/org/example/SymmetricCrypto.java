@@ -30,7 +30,7 @@ import java.io.BufferedReader;
 
 public class SymmetricCrypto {
 
-    // Method to generate SecureRandom instance with optional seed
+    // optional seed for randomness
     public static SecureRandom getSecureRandom(byte[] seed) {
         SecureRandom secureRandom;
         if (seed != null) {
@@ -47,7 +47,7 @@ public class SymmetricCrypto {
         keyGen.init(keySize, secureRandom);
         return keyGen.generateKey();
     }
-
+    //  key to hex convertation
     public static String keyToHex(SecretKey key) {
         return Base64.getEncoder().encodeToString(key.getEncoded());
     }
@@ -94,7 +94,6 @@ public class SymmetricCrypto {
 
     public static void saveSecretKeyToKeystore(SecretKey key, String keystoreFilename, String alias, char[] password) throws Exception {
         KeyStore keyStore = KeyStore.getInstance("JCEKS");
-        // Load the existing keystore or create a new one if it doesn't exist
         File keystoreFile = new File(keystoreFilename);
         if (keystoreFile.exists()) {
             try (FileInputStream fis = new FileInputStream(keystoreFilename)) {

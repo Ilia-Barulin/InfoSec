@@ -66,21 +66,21 @@ public class Main {
             System.out.println("6. Decrypt Text");
             System.out.println("7. Back to Main Menu");
             int choice = scanner.nextInt();
-            scanner.nextLine();  // consume newline
+            scanner.nextLine();
 
             try {
                 switch (choice) {
                     case 1:
                         System.out.print("Enter key size (128, 192, 256): ");
                         int keySize = scanner.nextInt();
-                        scanner.nextLine();  // consume newline
+                        scanner.nextLine();
                         System.out.print("Enter seed (leave blank for default randomness): ");
                         String seedInput = scanner.nextLine();
                         SecureRandom secureRandom = seedInput.isEmpty() ?
                                 SymmetricCrypto.getSecureRandom(null) :
                                 SymmetricCrypto.getSecureRandom(seedInput.getBytes());
                         secretKey = crypto.generateSecretKey(keySize, secureRandom);
-                        crypto.displaySecretKey(secretKey); // Displaying the key in hex format
+                        crypto.displaySecretKey(secretKey);
                         System.out.print("Enter filename to save the key: ");
                         String filename = scanner.nextLine();
                         crypto.saveSecretKey(secretKey, filename);
@@ -89,7 +89,7 @@ public class Main {
                         System.out.print("Enter filename to load the key: ");
                         filename = scanner.nextLine();
                         secretKey = crypto.loadSecretKey(filename);
-                        crypto.displaySecretKey(secretKey); // Displaying the loaded key in hex format
+                        crypto.displaySecretKey(secretKey);
                         break;
                     case 3:
                         if (secretKey == null) {
@@ -113,7 +113,7 @@ public class Main {
                         System.out.print("Enter keystore password: ");
                         char[] passwordLoad = scanner.nextLine().toCharArray();
                         secretKey = crypto.loadSecretKeyFromKeystore(keystoreFilename, alias, passwordLoad);
-                        crypto.displaySecretKey(secretKey); // Displaying the loaded key in hex format
+                        crypto.displaySecretKey(secretKey);
                         break;
                     case 5:
                         if (secretKey == null) {
@@ -125,7 +125,7 @@ public class Main {
                         System.out.print("Enter filename to save encrypted text: ");
                         filename = scanner.nextLine();
                         String encryptedText = crypto.encrypt(plainText, secretKey);
-                        crypto.displayEncryptedText(encryptedText); // Displaying the encrypted text in hex format
+                        crypto.displayEncryptedText(encryptedText);
                         crypto.saveEncryptedText(encryptedText, filename);
                         break;
                     case 6:
@@ -139,7 +139,7 @@ public class Main {
                         System.out.println("Decrypted Text: " + crypto.decrypt(encryptedTextToDecrypt, secretKey));
                         break;
                     case 7:
-                        return;  // Back to main menu
+                        return;
                     default:
                         System.out.println("Invalid choice. Please try again.");
                 }
@@ -161,14 +161,14 @@ public class Main {
             System.out.println("5. Decrypt Text");
             System.out.println("6. Back to Main Menu");
             int choice = scanner.nextInt();
-            scanner.nextLine();  // consume newline
+            scanner.nextLine();
 
             try {
                 switch (choice) {
                     case 1:
                         System.out.print("Enter key size (e.g., 2048): ");
                         int keySize = scanner.nextInt();
-                        scanner.nextLine();  // consume newline
+                        scanner.nextLine();
                         System.out.print("Enter seed (leave blank for default randomness): ");
                         String seedInput = scanner.nextLine();
                         SecureRandom secureRandom = seedInput.isEmpty() ?
@@ -190,13 +190,13 @@ public class Main {
                         System.out.print("Enter filename to load the public key: ");
                         publicFilename = scanner.nextLine();
                         publicKey = crypto.loadPublicKeyFromPEM(publicFilename);
-                        crypto.displayKey(publicKey); // Displaying the loaded public key in hex format
+                        crypto.displayKey(publicKey);
                         break;
                     case 3:
                         System.out.print("Enter filename to load the private key: ");
                         privateFilename = scanner.nextLine();
                         privateKey = crypto.loadPrivateKeyFromPEM(privateFilename);
-                        crypto.displayKey(privateKey); // Displaying the loaded private key in hex format
+                        crypto.displayKey(privateKey);
                         break;
                     case 4:
                         if (publicKey == null) {
@@ -222,7 +222,7 @@ public class Main {
                         System.out.println("Decrypted Text: " + crypto.decrypt(encryptedTextToDecrypt, privateKey));
                         break;
                     case 6:
-                        return;  // Back to main menu
+                        return;
                     default:
                         System.out.println("Invalid choice. Please try again.");
                 }
@@ -245,14 +245,14 @@ public class Main {
             System.out.println("5. Verify Signature");
             System.out.println("6. Back to Main Menu");
             int choice = scanner.nextInt();
-            scanner.nextLine();  // consume newline
+            scanner.nextLine();
 
             try {
                 switch (choice) {
                     case 1:
                         System.out.print("Enter key size (e.g., 1024): ");
                         int keySize = scanner.nextInt();
-                        scanner.nextLine();  // consume newline
+                        scanner.nextLine();
                         System.out.print("Enter seed (leave blank for default randomness): ");
                         String seedInput = scanner.nextLine();
                         SecureRandom secureRandom = seedInput.isEmpty() ?
@@ -274,13 +274,13 @@ public class Main {
                         System.out.print("Enter filename to load the public key: ");
                         String loadPublicFilename = scanner.nextLine();
                         publicKey = crypto.loadPublicKeyFromPEM(loadPublicFilename);
-                        crypto.displayKey(publicKey); // Displaying the loaded public key in hex format
+                        crypto.displayKey(publicKey);
                         break;
                     case 3:
                         System.out.print("Enter filename to load the private key: ");
                         String loadPrivateFilename = scanner.nextLine();
                         privateKey = crypto.loadPrivateKeyFromPEM(loadPrivateFilename);
-                        crypto.displayKey(privateKey); // Displaying the loaded private key in hex format
+                        crypto.displayKey(privateKey);
                         break;
                     case 4:
                         if (privateKey == null) {
@@ -311,7 +311,7 @@ public class Main {
                         System.out.println("Signature is " + (isValid ? "valid" : "invalid"));
                         break;
                     case 6:
-                        return;  // Back to main menu
+                        return;
                     default:
                         System.out.println("Invalid choice. Please try again.");
                 }
@@ -325,7 +325,7 @@ public class Main {
 }
 
 
-
+    // old one with just 1 selection for symmetric encryption
     /*
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -360,7 +360,7 @@ public class Main {
                                 SymmetricCrypto.getSecureRandom(null) :
                                 SymmetricCrypto.getSecureRandom(seedInput.getBytes());
                         secretKey = crypto.generateSecretKey(keySize, secureRandom);
-                        crypto.displaySecretKey(secretKey); // Displaying the key in hex format
+                        crypto.displaySecretKey(secretKey);
                         System.out.print("Enter filename to save the key: ");
                         String filename = scanner.nextLine();
                         crypto.saveSecretKey(secretKey, filename);
@@ -369,7 +369,7 @@ public class Main {
                         System.out.print("Enter filename to load the key: ");
                         filename = scanner.nextLine();
                         secretKey = crypto.loadSecretKey(filename);
-                        crypto.displaySecretKey(secretKey); // Displaying the loaded key in hex format
+                        crypto.displaySecretKey(secretKey);
                         break;
                     case 3:
                         if (secretKey == null) {
@@ -393,7 +393,7 @@ public class Main {
                         System.out.print("Enter keystore password: ");
                         password = scanner.nextLine().toCharArray();
                         secretKey = crypto.loadSecretKeyFromKeystore(keystoreFilename, alias, password);
-                        crypto.displaySecretKey(secretKey); // Displaying the loaded key in hex format
+                        crypto.displaySecretKey(secretKey);
                         break;
                     case 5:
                         if (secretKey == null) {
@@ -405,7 +405,7 @@ public class Main {
                         System.out.print("Enter filename to save encrypted text: ");
                         filename = scanner.nextLine();
                         String encryptedText = crypto.encrypt(plainText, secretKey);
-                        crypto.displayEncryptedText(encryptedText); // Displaying the encrypted text in hex format
+                        crypto.displayEncryptedText(encryptedText);
                         crypto.saveEncryptedText(encryptedText, filename);
                         break;
                     case 6:
